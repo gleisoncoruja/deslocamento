@@ -4,8 +4,8 @@ import { IContainer } from "@/interfaces/containerInterface";
 import styled from "@emotion/styled";
 
 const StyledBox = styled(Box)({
-  padding: "5rem 2rem",
   width: "100%",
+  overflow: "hidden",
 });
 
 export default function PageContainer({
@@ -15,7 +15,7 @@ export default function PageContainer({
 }: IContainer) {
   return (
     <StyledBox {...props}>
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         {title}
       </Typography>
       {children}

@@ -1,7 +1,9 @@
+import { ButtonLink } from "@/components/Buttons";
 import { StyledTableContent } from "@/components/Table";
 import { ICustomers } from "@/interfaces/customerInterface";
 import {
   Button,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -47,7 +49,9 @@ export const CustomersTable = ({ customers }: ICustomers) => {
               <TableCell>{customer.cidade}</TableCell>
               <TableCell>{customer.uf}</TableCell>
               <TableCell>
-                <Button variant="contained">Detalhes</Button>
+                <ButtonLink href={`/customers/${customer.id}`}>
+                  Detalhes
+                </ButtonLink>
               </TableCell>
             </TableRow>
           ))}

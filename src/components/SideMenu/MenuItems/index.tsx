@@ -45,9 +45,10 @@ export default function MenuItems({ open }: { open: boolean }) {
   return (
     <StyledList>
       {Items.map((item) => {
-        const isActive = pathname === item.link;
+        const isActive = pathname === item.link || false;
+
         return (
-          <StyledListItem key={item.text} isActive={isActive}>
+          <StyledListItem key={item.text} active={isActive}>
             <StyledLink href={item.link}>
               <Tooltip title={item.text} arrow placement="right">
                 {item.icon}

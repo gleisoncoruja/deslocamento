@@ -144,9 +144,10 @@ export default function SideMenu({ children }: { children: ReactNode }) {
         DrawerHeader={DrawerHeader}
         Drawer={Drawer}
       />
-
-      <DrawerHeader />
-      {children}
+      <Box sx={{ flexGrow: 1, p: 3, overflow: "hidden" }}>
+        <DrawerHeader />
+        {children}
+      </Box>
     </Box>
   );
 }

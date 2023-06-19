@@ -19,7 +19,9 @@ export const StyledList = styled(List)({
   gap: "1rem",
 });
 
-export const StyledListItem = styled(List)(({ isActive }: ListProps) => ({
+export const StyledListItem = styled(List, {
+  shouldForwardProp: (prop) => prop !== "active",
+})(({ active }: ListProps) => ({
   display: "block",
-  color: isActive ? "#1976d2" : "initial",
+  color: active ? "#1976d2" : "initial",
 }));
