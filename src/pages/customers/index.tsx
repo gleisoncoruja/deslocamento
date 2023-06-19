@@ -4,9 +4,10 @@ import customersServices from "@/services/customersServices";
 import { ICustomers } from "@/interfaces/customerInterface";
 import { useEffect, useState } from "react";
 //import Container from "@/components/Container";
-import { Container, Paper, TableContainer } from "@mui/material";
+import { Box, Container, Paper, TableContainer } from "@mui/material";
 import PageContainer from "@/components/Container";
 import PageContent from "@/components/Content";
+import { CustomersTable } from "./customersTable";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { data: customers } = await customersServices.getCustomers();
@@ -25,9 +26,7 @@ export default function Customers({ customers }: ICustomers) {
   return (
     <PageContainer title="Clientes">
       <PageContent>
-        {customers?.map((customer) => (
-          <p key={customer.id}>{customer.nome}</p>
-        ))}
+        <CustomersTable customers={customers} />
       </PageContent>
     </PageContainer>
   );
