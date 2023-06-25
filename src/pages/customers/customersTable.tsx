@@ -2,8 +2,6 @@ import { ButtonLink } from "@/components/Buttons";
 import { StyledTableContent } from "@/components/Table";
 import { ICustomers } from "@/interfaces/customerInterface";
 import {
-  Button,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -12,7 +10,11 @@ import {
   TableRow,
 } from "@mui/material";
 
-export const CustomersTable = ({ customers }: ICustomers) => {
+interface ITableProps extends ICustomers {
+  search: string;
+}
+
+export const CustomersTable = ({ customers, search }: ITableProps) => {
   const headRows = [
     "ID",
     "Nome",
@@ -37,24 +39,28 @@ export const CustomersTable = ({ customers }: ICustomers) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {customers?.map((customer) => (
-            <TableRow key={customer.id}>
-              <TableCell>{customer.id}</TableCell>
-              <TableCell>{customer.nome}</TableCell>
-              <TableCell>{customer.numeroDocumento}</TableCell>
-              <TableCell>{customer.tipoDocumento}</TableCell>
-              <TableCell>{customer.logradouro}</TableCell>
-              <TableCell>{customer.numero}</TableCell>
-              <TableCell>{customer.bairro}</TableCell>
-              <TableCell>{customer.cidade}</TableCell>
-              <TableCell>{customer.uf}</TableCell>
-              <TableCell>
-                <ButtonLink href={`/customers/${customer.id}`}>
-                  Detalhes
-                </ButtonLink>
-              </TableCell>
-            </TableRow>
-          ))}
+          {customers
+            ?.filter(({ nome }) =>
+              nome?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+            )
+            .map((customer) => (
+              <TableRow key={customer.id}>
+                <TableCell>{customer.id}</TableCell>
+                <TableCell>{customer.nome}</TableCell>
+                <TableCell>{customer.numeroDocumento}</TableCell>
+                <TableCell>{customer.tipoDocumento}</TableCell>
+                <TableCell>{customer.logradouro}</TableCell>
+                <TableCell>{customer.numero}</TableCell>
+                <TableCell>{customer.bairro}</TableCell>
+                <TableCell>{customer.cidade}</TableCell>
+                <TableCell>{customer.uf}</TableCell>
+                <TableCell>
+                  <ButtonLink href={`/customers/${customer.id}`}>
+                    Detalhes
+                  </ButtonLink>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </StyledTableContent>

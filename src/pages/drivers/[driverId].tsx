@@ -1,6 +1,5 @@
 import PageContainer from "@/components/Container";
-import { ICustomer } from "@/interfaces/customerInterface";
-import customersServices from "@/services/customersServices";
+
 import { GetServerSideProps } from "next";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/router";
@@ -17,51 +16,54 @@ import {
   FormTitle,
 } from "@/Form";
 import { ConfirmDialog } from "@/components/Dialogs/ConfirmDialog";
-interface ICustomerProps {
-  customer: ICustomer;
+import driversServices from "@/services/driversServices";
+import { IDriver } from "@/interfaces/driverInterface";
+import { AxiosError } from "axios";
+interface IDriverProps {
+  driver: IDriver;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context.params?.customerId;
-  const { data: customer } = await customersServices.getCustomer({
+  const id = context.params?.driverId;
+  const { data: driver } = await driversServices.getDriver({
     id,
   });
   return {
-    props: { customer },
+    props: { driver },
   };
 };
 
-export default function Customer({ customer }: ICustomerProps) {
+export default function Customer({ driver }: IDriverProps) {
   const router = useRouter();
-  const { register, handleSubmit, reset } = useForm<ICustomer>();
+  const { register, handleSubmit, reset } = useForm<IDriver>();
   const [loading, setLoading] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const onSubmit = async (data: ICustomer) => {
+  const onSubmit = async (data: IDriver) => {
     try {
       setLoading(true);
-      data.id = customer.id;
-      await customersServices.updateCustomer({
-        id: customer.id,
+      data.id = driver.id;
+      await driversServices.updateDriver({
+        id: driver.id,
         data,
       });
       toast.success("Alterações salvas com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao salvar alterações");
+    } catch (error: AxiosError | any) {
+      toast.error(`Erro ao salvar alterações:  ${error.response?.data}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteCostumer = async () => {
+  const deleteDriver = async () => {
     try {
       setLoading(true);
-      await customersServices.deleteCustomer({
-        id: customer.id,
+      await driversServices.deleteDriver({
+        id: driver.id,
       });
       toast.success("Cadastro excluído com sucesso!");
       setOpenConfirm(false);
-      router.push("/customers");
+      router.push("/drivers");
     } catch (error) {
       toast.error("Erro ao excluir cadastro");
     } finally {
@@ -78,7 +80,7 @@ export default function Customer({ customer }: ICustomerProps) {
   };
 
   const handleConfirm = () => {
-    deleteCostumer();
+    deleteDriver();
   };
 
   return (
@@ -91,72 +93,46 @@ export default function Customer({ customer }: ICustomerProps) {
             label="Nome"
             placeholder="Digite seu nome"
             fullWidth
-            defaultValue={customer.nome}
+            disabled
+            defaultValue={driver.nome}
             {...register("nome")}
           />
           <FieldContent>
             <TextField
               required
-              label="Nº do documento"
-              placeholder="Ex.: 123.456.789-10"
+              label="Nº da habilitação"
+              placeholder="Ex.: 123345677"
               fullWidth
-              defaultValue={customer.numeroDocumento}
-              {...register("numeroDocumento")}
+              disabled
+              defaultValue={driver.numeroHabilitacao}
+              {...register("numeroHabilitacao")}
             />
 
             <TextField
               required
-              label="Tipo do documento"
-              placeholder="Ex.: CPF"
+              label="Categoria da habilitação"
+              placeholder="Ex.: B"
               fullWidth
-              defaultValue={customer.tipoDocumento}
-              {...register("tipoDocumento")}
+              disabled
+              defaultValue={driver.catergoriaHabilitacao}
+              {...register("catergoriaHabilitacao")}
+            />
+            <TextField
+              required
+              type="date"
+              label="Vencimento da habilitação"
+              placeholder="Ex.: 23/08/2024"
+              fullWidth
+              defaultValue={
+                driver.vencimentoHabilitacao &&
+                new Date(driver.vencimentoHabilitacao)
+                  .toISOString()
+                  .split("T")[0]
+              }
+              {...register("vencimentoHabilitacao")}
             />
           </FieldContent>
-          <FieldContent>
-            <TextField
-              required
-              label="Logradouro"
-              placeholder="Digite o logradouro"
-              fullWidth
-              defaultValue={customer.logradouro}
-              {...register("logradouro")}
-            />
-            <TextField
-              required
-              label="Número"
-              placeholder="Ex.: 123"
-              fullWidth
-              defaultValue={customer.numero}
-              {...register("numero")}
-            />
-          </FieldContent>
-          <FieldContent>
-            <TextField
-              required
-              label="Bairro"
-              placeholder="Ex.: Pilar"
-              fullWidth
-              defaultValue={customer.bairro}
-              {...register("bairro")}
-            />
-            <TextField
-              required
-              label="Cidade"
-              placeholder="Ex.: Duque de Caxias"
-              fullWidth
-              defaultValue={customer.cidade}
-              {...register("cidade")}
-            />
-            <TextField
-              required
-              label="UF"
-              placeholder="Ex.: UF"
-              fullWidth
-              defaultValue={customer.uf}
-              {...register("uf")}
-            />
-          </FieldContent>
+
           <FormActionContent>
             <LoadingButton
               loading={loading}

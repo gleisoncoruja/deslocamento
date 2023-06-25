@@ -1,7 +1,6 @@
 import PageContainer from "@/components/Container";
 import { ICustomer } from "@/interfaces/customerInterface";
 import customersServices from "@/services/customersServices";
-import { GetServerSideProps } from "next";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/router";
 
@@ -16,82 +15,37 @@ import {
   FormContent,
   FormTitle,
 } from "@/Form";
-import { ConfirmDialog } from "@/components/Dialogs/ConfirmDialog";
-interface ICustomerProps {
-  customer: ICustomer;
-}
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context.params?.customerId;
-  const { data: customer } = await customersServices.getCustomer({
-    id,
-  });
-  return {
-    props: { customer },
-  };
-};
-
-export default function Customer({ customer }: ICustomerProps) {
+export default function Customer() {
   const router = useRouter();
   const { register, handleSubmit, reset } = useForm<ICustomer>();
   const [loading, setLoading] = useState(false);
-  const [openConfirm, setOpenConfirm] = useState(false);
 
   const onSubmit = async (data: ICustomer) => {
     try {
       setLoading(true);
-      data.id = customer.id;
-      await customersServices.updateCustomer({
-        id: customer.id,
+      const { data: id } = await customersServices.createCustomer({
         data,
       });
-      toast.success("Alterações salvas com sucesso!");
+      toast.success("Cadastro criado com sucesso!");
+      router.push(`/customers/${id}`);
     } catch (error) {
-      toast.error("Erro ao salvar alterações");
+      toast.error("Erro ao criar cadastro");
     } finally {
       setLoading(false);
     }
-  };
-
-  const deleteCostumer = async () => {
-    try {
-      setLoading(true);
-      await customersServices.deleteCustomer({
-        id: customer.id,
-      });
-      toast.success("Cadastro excluído com sucesso!");
-      setOpenConfirm(false);
-      router.push("/customers");
-    } catch (error) {
-      toast.error("Erro ao excluir cadastro");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = () => {
-    setOpenConfirm(true);
-  };
-
-  const handleCancel = () => {
-    setOpenConfirm(false);
-  };
-
-  const handleConfirm = () => {
-    deleteCostumer();
   };
 
   return (
-    <PageContainer title={`Detalhes do cadastro`} backButton={true}>
+    <PageContainer title={`Novo cadastro`} backButton={true}>
       <FormContent>
-        <FormTitle variant="h5">Edite ou exclua o cadastro</FormTitle>
+        <FormTitle variant="h5">Cadastre um novo usuário</FormTitle>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             required
             label="Nome"
             placeholder="Digite seu nome"
             fullWidth
-            defaultValue={customer.nome}
             {...register("nome")}
           />
           <FieldContent>
@@ -100,7 +54,6 @@ export default function Customer({ customer }: ICustomerProps) {
               label="Nº do documento"
               placeholder="Ex.: 123.456.789-10"
               fullWidth
-              defaultValue={customer.numeroDocumento}
               {...register("numeroDocumento")}
             />
 
@@ -109,7 +62,6 @@ export default function Customer({ customer }: ICustomerProps) {
               label="Tipo do documento"
               placeholder="Ex.: CPF"
               fullWidth
-              defaultValue={customer.tipoDocumento}
               {...register("tipoDocumento")}
             />
           </FieldContent>
@@ -119,7 +71,6 @@ export default function Customer({ customer }: ICustomerProps) {
               label="Logradouro"
               placeholder="Digite o logradouro"
               fullWidth
-              defaultValue={customer.logradouro}
               {...register("logradouro")}
             />
             <TextField
@@ -127,7 +78,6 @@ export default function Customer({ customer }: ICustomerProps) {
               label="Número"
               placeholder="Ex.: 123"
               fullWidth
-              defaultValue={customer.numero}
               {...register("numero")}
             />
           </FieldContent>
@@ -137,7 +87,6 @@ export default function Customer({ customer }: ICustomerProps) {
               label="Bairro"
               placeholder="Ex.: Pilar"
               fullWidth
-              defaultValue={customer.bairro}
               {...register("bairro")}
             />
             <TextField
@@ -145,7 +94,6 @@ export default function Customer({ customer }: ICustomerProps) {
               label="Cidade"
               placeholder="Ex.: Duque de Caxias"
               fullWidth
-              defaultValue={customer.cidade}
               {...register("cidade")}
             />
             <TextField
@@ -153,19 +101,17 @@ export default function Customer({ customer }: ICustomerProps) {
               label="UF"
               placeholder="Ex.: UF"
               fullWidth
-              defaultValue={customer.uf}
               {...register("uf")}
             />
           </FieldContent>
           <FormActionContent>
             <LoadingButton
               loading={loading}
-              type="button"
+              type="reset"
               variant="contained"
               color="error"
-              onClick={handleDelete}
             >
-              Excluir
+              Limpar
             </LoadingButton>
             <LoadingButton loading={loading} type="submit" variant="contained">
               Salvar
@@ -173,14 +119,6 @@ export default function Customer({ customer }: ICustomerProps) {
           </FormActionContent>
         </Form>
       </FormContent>
-      <ConfirmDialog
-        open={openConfirm}
-        title="Deseja excluir este cadastro?"
-        text="Está ação não pode ser desfeita, uma vez excluído o cadastro, não será mais possível recupera-lo"
-        cancelAction={handleCancel}
-        confirmAction={handleConfirm}
-        onClose={handleCancel}
-      />
     </PageContainer>
   );
 }

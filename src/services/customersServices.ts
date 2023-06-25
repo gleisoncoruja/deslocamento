@@ -9,6 +9,10 @@ interface IDeleteCustomerProps {
   id: number | string | string[] | undefined;
 }
 
+interface ICreateCustomer {
+  data: ICustomer;
+}
+
 const getCustomers = async () => {
   const url = "/cliente";
   return await api.get(url);
@@ -34,10 +38,16 @@ const deleteCustomer = async ({ id }: IDeleteCustomerProps) => {
   });
 };
 
+const createCustomer = async ({ data }: ICreateCustomer) => {
+  const url = `/cliente/`;
+  return await api.post(url, data);
+};
+
 const customersServices = {
   getCustomers,
   getCustomer,
   updateCustomer,
   deleteCustomer,
+  createCustomer,
 };
 export default customersServices;

@@ -1,26 +1,24 @@
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import customersServices from "@/services/customersServices";
-import { ICustomers } from "@/interfaces/customerInterface";
-
-import { Button } from "@mui/material";
+import { IDrivers } from "@/interfaces/driverInterface";
 import PageContainer from "@/components/Container";
 import PageContent from "@/components/Content";
-import { CustomersTable } from "./customersTable";
+import { DriversTable } from "./driversTable";
+import DriversServices from "@/services/driversServices";
 import { SearchAndNewContent } from "@/components/Content/SearchAndNewContent";
-import { useState, ChangeEvent } from "react";
-import { useDebounce } from "@/utils/debaunce";
 import { SearchInput } from "@/components/SearchInput";
+import { ChangeEvent, useState } from "react";
+import { useDebounce } from "@/utils/debaunce";
 import { ButtonLink } from "@/components/Buttons";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { data: customers } = await customersServices.getCustomers();
+  const { data: drivers } = await DriversServices.getDrivers();
   return {
-    props: { customers },
+    props: { drivers },
   };
 };
 
-export default function Customers({ customers }: ICustomers) {
+export default function Drivers({ drivers }: IDrivers) {
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
 
@@ -34,8 +32,9 @@ export default function Customers({ customers }: ICustomers) {
   if (router.isFallback) {
     return <div>Carregando...</div>;
   }
+
   return (
-    <PageContainer title="Clientes">
+    <PageContainer title="Condutores">
       <PageContent>
         <SearchAndNewContent>
           <SearchInput
@@ -43,10 +42,9 @@ export default function Customers({ customers }: ICustomers) {
             placeholder="Pesquisar pelo nome"
             onChange={debaunceSearch}
           />
-          <ButtonLink href={"customers/new"}>Novo cadastro</ButtonLink>
+          <ButtonLink href={"drivers/new"}>Novo cadastro</ButtonLink>
         </SearchAndNewContent>
-
-        <CustomersTable customers={customers} search={search} />
+        <DriversTable drivers={drivers} search={search} />
       </PageContent>
     </PageContainer>
   );
