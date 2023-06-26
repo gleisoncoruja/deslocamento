@@ -8,5 +8,5 @@ export interface IDriver {
 }
 
 export interface IDrivers {
-  drivers: IDriver[];
+  drivers: IDriver[] | any;
 }

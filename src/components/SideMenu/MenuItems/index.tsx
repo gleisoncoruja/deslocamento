@@ -26,17 +26,12 @@ const Items = [
   {
     text: "Deslocamento",
     icon: <NavigationIcon />,
-    link: "/displacement",
+    link: "/displacements",
   },
   {
     text: "Veículos",
     icon: <DirectionsCarFilledIcon />,
     link: "/vehicles",
-  },
-  {
-    text: "Previsão do tempo",
-    icon: <ThermostatIcon />,
-    link: "/weatherforecast",
   },
 ];
 
